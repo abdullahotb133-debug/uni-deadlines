@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تسليمات الجامعة</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#111a33;
+      --muted:#93a4c7;
+      --text:#eef2ff;
+      --accent:#7c9cff;
+      --danger:#ff5a7a;
+      --warn:#ffcc66;
+      --ok:#55e6a5;
+      --border:rgba(255,255,255,.10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans Arabic", "Noto Naskh Arabic", sans-serif;
+      background: radial-gradient(1200px 600px at 80% -10%, rgba(124,156,255,.25), transparent 60%),
+                  radial-gradient(900px 500px at 10% 0%, rgba(85,230,165,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.45;
+    }
+    header{
+      padding:24px 18px 10px;
+      max-width:980px;
+      margin:0 auto;
+    }
+    h1{margin:0 0 8px; font-size:22px; letter-spacing:.2px}
+    .sub{margin:0; color:var(--muted); font-size:13px}
+
+    .toolbar{
+      max-width:980px;
+      margin:12px auto 0;
+      padding:0 18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .chips{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .chip{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .05s ease, background .2s ease;
+    }
+    .chip:active{transform:scale(.98)}
+    .chip.active{background: rgba(124,156,255,.18); border-color: rgba(124,156,255,.35)}
+
+    .search{
+      flex:1;
+      min-width:240px;
+      display:flex;
+      justify-content:flex-start;
+    }
+    input[type="search"]{
+      width:100%;
+      max-width:360px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      outline:none;
+      font-size:13px;
+    }
+    input[type="search"]::placeholder{color:rgba(147,164,199,.75)}
+
+    main{
+      max-width:980px;
+      margin:16px auto 28px;
+      padding:0 18px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:12px;
+    }
+
+    .card{
+      grid-column: span 12;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border-radius:16px;
+      padding:14px 14px 12px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .row{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+
+    .title{
+      font-size:16px;
+      margin:0 0 6px;
+      font-weight:700;
+    }
+    .meta{
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .badge{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      white-space:nowrap;
+    }
+
+    .countdown{
+      text-align:left;
+      min-width:160px;
+    }
+    .countdown .label{font-size:11px; color:var(--muted); margin:2px 0 6px}
+    .countdown .time{
+      font-variant-numeric: tabular-nums;
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+
+    .bar{
+      height:8px;
+      background: rgba(255,255,255,.06);
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:10px;
+      border:1px solid rgba(255,255,255,.07);
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(124,156,255,.95), rgba(85,230,165,.95));
+      transition: width .6s ease;
+    }
+
+    .status{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.08;
+      background: radial-gradient(420px 240px at 95% 20%, rgba(124,156,255,.9), transparent 60%);
+    }
+
+    .danger .countdown .time{color:var(--danger)}
+    .warn .countdown .time{color:var(--warn)}
+    .ok .countdown .time{color:var(--ok)}
+
+    .danger .bar > div{background: linear-gradient(90deg, rgba(255,90,122,.95), rgba(255,204,102,.95));}
+
+    @media (min-width: 720px){
+      .card{grid-column: span 6;}
+      h1{font-size:24px}
+    }
+    @media (min-width: 980px){
+      .card{grid-column: span 4;}
+    }
+
+    footer{
+      max-width:980px;
+      margin:0 auto;
+      padding:0 18px 24px;
+      color:rgba(147,164,199,.85);
+      font-size:12px;
+    }
+
+    .small-note{margin:10px 0 0;}
+    code.inline{background: rgba(255,255,255,.06); padding:2px 6px; border-radius:8px; border:1px solid rgba(255,255,255,.08)}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>تسليمات الجامعة</h1>
+    <p class="sub">كل التسليمات مع عدّاد تنازلي. (الوقت محسوب على جهازك)</p>
+  </header>
+
+  <section class="toolbar" aria-label="controls">
+    <div class="chips">
+      <div class="chip active" data-filter="all">الكل</div>
+      <div class="chip" data-filter="upcoming">القادمة</div>
+      <div class="chip" data-filter="week">خلال 7 أيام</div>
+      <div class="chip" data-filter="overdue">متأخرة</div>
+    </div>
+    <div class="search">
+      <input id="q" type="search" placeholder="ابحث… (مثال: environmental)" autocomplete="off" />
+    </div>
+  </section>
+
+  <main>
+    <div id="grid" class="grid" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    <div>لتعديل التسليمات: افتح ملف <code class="inline">index.html</code> وغيّر قائمة <code class="inline">DEADLINES</code>.</div>
+    <div class="small-note">ملاحظة: إذا عندك وقت محدد للتسليم (مثلاً 2:00 PM)، اكتب <code class="inline">time</code> مثل <code class="inline">"14:00"</code>. إذا ما كتبته، يعتبر 23:59.</div>
+  </footer>
+
+<script>
+  // عدّل هنا فقط
+  // السنة محطوطة 2026 بناءً على الترم عندك. إذا اختلفت غيّرها.
+  const DEADLINES = [
+    { title: "توتريال 1 كونستركشن", date: "2026-01-21", time: "23:59", module: "Construction" },
+    { title: "توتريال 2 كونستركشن", date: "2026-01-28", time: "23:59", module: "Construction" },
+    { title: "تسليم CIVL بروجيكت حق هايدروليك", date: "2026-02-06", time: "23:59", module: "Hydraulics" },
+    { title: "تسليم بروجيكت environmental", date: "2026-02-19", time: "23:59", module: "Environmental" },
+    { title: "كورس وورك ستركشر ميكانكس", date: "2026-03-02", time: "23:59", module: "Structures" },
+    { title: "توتريال 3 كونستركشن", date: "2026-03-04", time: "23:59", module: "Construction" },
+    { title: "توتريال 4 كونستركشن", date: "2026-03-11", time: "23:59", module: "Construction" },
+    { title: "كورس وورك جيوتكتكال", date: "2026-03-20", time: "23:59", module: "Geotechnical" },
+    { title: "تسليم لاب ريبورت environmental", date: "2026-03-23", time: "23:59", module: "Environmental" },
+  ];
+
+  // --------- app code (لا تحتاج تلمسه) ---------
+  const $grid = document.getElementById('grid');
+  const $q = document.getElementById('q');
+  const $chips = Array.from(document.querySelectorAll('.chip'));
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function parseDue(d){
+    const [Y,M,DD] = d.date.split('-').map(Number);
+    const [hh,mm] = (d.time || '23:59').split(':').map(Number);
+    // Local time on user's device
+    return new Date(Y, M-1, DD, hh, mm, 0, 0);
+  }
+
+  function fmtDate(due){
+    return new Intl.DateTimeFormat('ar', {
+      weekday:'short', year:'numeric', month:'short', day:'numeric',
+      hour:'2-digit', minute:'2-digit'
+    }).format(due);
+  }
+
+  function humanCountdown(ms){
+    if(ms <= 0) return { text: "انتهى الوقت", parts: {d:0,h:0,m:0,s:0} };
+    const s = Math.floor(ms/1000);
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    const text = `${d}d ${pad(h)}h ${pad(m)}m ${pad(sec)}s`;
+    return { text, parts:{d,h,m,s:sec} };
+  }
+
+  function severity(ms){
+    const day = 86400000;
+    if(ms <= 0) return 'danger';
+    if(ms <= 2*day) return 'danger';
+    if(ms <= 7*day) return 'warn';
+    return 'ok';
+  }
+
+  // progress: how far we are into the window between now and due+window
+  // We'll compute a "time left" bar: 0% at now if due is far away, but that's not useful.
+  // Instead: show % of time remaining within a 30-day window (caps nicely).
+  function barWidth(ms){
+    const windowMs = 30 * 86400000; // 30 days
+    const clamped = Math.max(0, Math.min(windowMs, ms));
+    return (clamped / windowMs) * 100;
+  }
+
+  let activeFilter = 'all';
+
+  function applyFilter(items){
+    const now = Date.now();
+    const weekMs = 7 * 86400000;
+    return items.filter(it => {
+      const ms = it.due.getTime() - now;
+      if(activeFilter === 'upcoming') return ms > 0;
+      if(activeFilter === 'week') return ms > 0 && ms <= weekMs;
+      if(activeFilter === 'overdue') return ms <= 0;
+      return true;
+    });
+  }
+
+  function applySearch(items){
+    const q = ($q.value || '').trim().toLowerCase();
+    if(!q) return items;
+    return items.filter(it => {
+      const hay = `${it.title} ${it.module} ${it.date}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  function sortItems(items){
+    return items.slice().sort((a,b) => a.due - b.due);
+  }
+
+  function render(){
+    const now = Date.now();
+    const items = DEADLINES.map(d => ({...d, due: parseDue(d)}));
+
+    const visible = sortItems(applySearch(applyFilter(items)));
+
+    $grid.innerHTML = visible.map((it, idx) => {
+      const ms = it.due.getTime() - now;
+      const sev = severity(ms);
+      const cd = humanCountdown(ms);
+      const w = barWidth(ms);
+      return `
+        <article class="card ${sev}" data-idx="${idx}">
+          <div class="status"></div>
+          <div class="row">
+            <div>
+              <h2 class="title">${escapeHtml(it.title)}</h2>
+              <div class="meta">
+                <span class="badge">${escapeHtml(it.module || '—')}</span>
+                <span class="badge">${escapeHtml(fmtDate(it.due))}</span>
+              </div>
+            </div>
+            <div class="countdown" dir="ltr">
+              <div class="label">Time left</div>
+              <div class="time" data-role="time" data-due="${it.due.toISOString()}">${cd.text}</div>
+            </div>
+          </div>
+          <div class="bar" aria-hidden="true"><div style="width:${w.toFixed(2)}%"></div></div>
+        </article>
+      `;
+    }).join('') || `
+      <div class="card" style="grid-column: span 12; text-align:center; padding:18px">
+        ما فيه نتائج.
+      </div>
+    `;
+  }
+
+  function tick(){
+    const now = Date.now();
+    document.querySelectorAll('[data-role="time"]').forEach(el => {
+      const dueIso = el.getAttribute('data-due');
+      const due = new Date(dueIso);
+      const ms = due.getTime() - now;
+      el.textContent = humanCountdown(ms).text;
+
+      // update severity class on card
+      const card = el.closest('.card');
+      const sev = severity(ms);
+      card.classList.remove('danger','warn','ok');
+      card.classList.add(sev);
+
+      // update bar
+      const bar = card.querySelector('.bar > div');
+      if(bar) bar.style.width = `${barWidth(ms).toFixed(2)}%`;
+    });
+  }
+
+  function escapeHtml(str){
+    return String(str)
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'",'&#039;');
+  }
+
+  // events
+  $chips.forEach(ch => {
+    ch.addEventListener('click', () => {
+      $chips.forEach(x => x.classList.remove('active'));
+      ch.classList.add('active');
+      activeFilter = ch.dataset.filter;
+      render();
+      tick();
+    });
+  });
+
+  $q.addEventListener('input', () => {
+    render();
+    tick();
+  });
+
+  // init
+  render();
+  tick();
+  setInterval(tick, 1000);
+</script>
+</body>
+</html>
